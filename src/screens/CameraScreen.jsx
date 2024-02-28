@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { ActivityIndicator } from 'react-native-paper';
-import { Camera, useCameraDevice, useCameraPermission } from 'react-native-vision-camera';
-
-const HomeScreen = () => {
+import { Camera, useCameraDevice, useCameraFormat, useCameraPermission } from 'react-native-vision-camera';
+import unities from './unities';
+const CameraScreen = () => {
   const { hasPermission, requestPermission } = useCameraPermission();
-  const device = useCameraDevice('front');
+  const device = useCameraDevice('back');
+
   useEffect(() => {
     if (!hasPermission) {
       requestPermission();
@@ -31,8 +32,8 @@ const HomeScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width:500,
+    width: unities.fullWidth,
   },
 });
 
-export default HomeScreen;
+export default CameraScreen;
