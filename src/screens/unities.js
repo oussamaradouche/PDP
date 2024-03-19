@@ -4,7 +4,8 @@ const { height, width } = Dimensions.get("window");
 const unities = {
   fullWidth: width,
   fullHeight: height,
-  fullHeight2: height * 0.8667,
-  cameraHeight: height * 0.7,
+  cameraHeight: height * 0.6,
+  topSection: height * 0.2,
+  bottomSection: height * 0.2,
 };
 export default unities;
