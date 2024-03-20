@@ -92,9 +92,8 @@ const CameraScreen = () => {
       <View style={styles.bottomSection}>
         <Pressable
           onPress={onTakePicturePress}
-          style={{ position: 'absolute', backgroundColor: 'white', width: 65, height: 65, marginTop: 20, borderRadius: 75 }}
+          style={{ position: 'absolute', backgroundColor: 'white', width: 65, height: 65, marginTop: 20, borderRadius: 75, borderWidth:2 }}
         />
-        <Text>text : { recognizedText}</Text>
       </View>
     </View>
   );
@@ -103,13 +102,11 @@ const CameraScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    borderColor: 'red',
-    borderWidth: 1,
+    
     backgroundColor: "#FAFBFF",
   },
   topSection: {
     height: unities.topSection,
-    backgroundColor: 'yellow',
     justifyContent: 'space-between',
     flexDirection: 'row',
     paddingTop: 10,
@@ -132,14 +129,11 @@ const styles = StyleSheet.create({
   camera: {
     height: unities.cameraHeight,
     width: unities.fullWidth,
-    borderWidth: 100,
-    borderColor: 'blue',
     alignItems: 'center',
     justifyContent: 'center',
   },
   bottomSection: {
     height: unities.bottomSection,
-    backgroundColor: 'purple',
     alignItems: 'center'
   },
 });
