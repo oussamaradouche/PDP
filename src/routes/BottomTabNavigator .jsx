@@ -38,8 +38,13 @@ const BottomTabNavigator = ({ theme }) => {
         },
       }}>
 
-      <Tab.Screen name={CameraName} component={CameraScreen} />
-      <Tab.Screen name={GradesName} component={GradesScreen} />
+      <Tab.Screen name={CameraName}>
+        {props => <CameraScreen {...props}/>}
+      </Tab.Screen>
+      <Tab.Screen name={GradesName}>
+      {props => <GradesScreen {...props}  />}
+      </Tab.Screen>
+
     </Tab.Navigator>
   );
 };

@@ -1,12 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, StyleSheet, Pressable } from 'react-native';
+import { View, Text, StyleSheet, Pressable, Button } from 'react-native';
 import { ActivityIndicator, List, useTheme } from 'react-native-paper';
 import { Camera, useCameraDevice, useCameraPermission, useCodeScanner } from 'react-native-vision-camera';
-import Tesseract from 'tesseract.js';
 import unities from './unities';
 
 
-const CameraScreen = () => {
+const CameraScreen = ({ navigation }) => {
   const theme = useTheme();
   const { hasPermission, requestPermission } = useCameraPermission();
   const device = useCameraDevice('back');
@@ -15,7 +14,9 @@ const CameraScreen = () => {
   const camera = useRef(null); 
   const [recognizedText, setRecognizedText] = useState('');
   const [photo, setPhoto] = useState(null);
-  const [data, setData] = useState('scan');
+  const [studentId, setStudentId] = useState('');
+  const [grade, setGrade] = useState('');
+  const [data, setData] = useState([]);
 
   const codeScanner = useCodeScanner({
   codeTypes: ['qr', 'ean-13','code-128'],
@@ -32,6 +33,7 @@ const CameraScreen = () => {
     //handleOCR();
     console.log(photo.path);
     console.log('ocr called');
+    
   };
 
   /*const handleOCR = async () => {
@@ -45,8 +47,32 @@ const CameraScreen = () => {
     
   };*/
 
+  const Save = () => {
+    const newData = {
+      id: data.length + 1, 
+      student_id: recognizedText,
+      grade: 15
+    };
 
+    setData(prevData => [...prevData, newData]);
 
+    setRecognizedText('');
+
+  };
+  useEffect(() => {
+  if (data.length > 0) {
+    sendDataToGradesScreen();
+  }
+}, [data]);
+  const sendDataToGradesScreen = () => {
+
+    navigation.navigate('Grades', { data: data });
+  };
+
+  const saveAndSend = () => {
+    Save();
+    sendDataToGradesScreen();
+  }
 
   useEffect(() => {
     if (!hasPermission) {
@@ -90,11 +116,24 @@ const CameraScreen = () => {
         codeScanner={codeScanner}
       />
       <View style={styles.bottomSection}>
-        <Pressable
-          onPress={onTakePicturePress}
-          style={{ position: 'absolute', backgroundColor: 'white', width: 65, height: 65, marginTop: 20, borderRadius: 75, borderWidth:2 }}
-        />
-      </View>
+  
+    <Pressable
+      onPress={onTakePicturePress}
+      style={{
+        backgroundColor: 'white',
+        width: 65,
+        height: 65,
+        borderRadius: 75,
+        borderWidth: 2,
+        
+        
+      }}
+    />
+        <Button title="Save" onPress={saveAndSend}  />
+
+  
+</View>
+
     </View>
   );
 };
@@ -133,9 +172,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   bottomSection: {
+    flexDirection:'row',
+    backgroundColor: 'red',
+    alignItems: 'center',
+    justifyContent:'center',
     height: unities.bottomSection,
-    alignItems: 'center'
+    paddingBottom:50
   },
+ 
+  
 });
 
 export default CameraScreen;
