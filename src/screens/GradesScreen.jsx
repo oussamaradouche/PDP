@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Button, View, Text, TextInput, TouchableOpacity, FlatList } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import * as XLSX from 'xlsx';
@@ -7,8 +7,17 @@ import * as Sharing from 'expo-sharing';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const GradesScreen = ({ route }) => {
-    const data = route?.params?.data || []; 
-    const genExcel = (data) => {
+  const initialData = route?.params?.data ; 
+  console.log("Initial Data:", initialData);
+  
+useEffect(() => {
+  console.log("Initial Data:", initialData);
+  setData(initialData);
+}, [initialData]);
+
+  const [data, setData] = useState(initialData); 
+
+  const genExcel = (data) => {
     let workbook = XLSX.utils.book_new();
     let worksheet = XLSX.utils.json_to_sheet(data);
 
@@ -22,7 +31,6 @@ const GradesScreen = ({ route }) => {
       Sharing.shareAsync(filename);
     });
   };
-
 
   const [editedStudentId, setEditedStudentId] = useState('');
   const [editedGrade, setEditedGrade] = useState('');
@@ -48,18 +56,22 @@ const GradesScreen = ({ route }) => {
     setSelectedId(null);
   };
 
-  const renderItem = ({ item }) => (
+  const renderItem = ({ item }) => {
+  console.log("Student ID:", item.student_id);
+  console.log("Grade:", item.grade);
+  
+  return (
     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingTop: 20 }}>
       <View style={styles.rowItem}>
         {selectedId === item.id ? (
           <>
             <TextInput
-              value={editedStudentId}
+              value={editedStudentId || item.student_id.toString()}
               onChangeText={setEditedStudentId}
               style={{ borderBottomWidth: 1, borderColor: '#ccc', width: 80, textAlign: 'center' }}
             />
             <TextInput
-              value={editedGrade}
+              value={editedGrade || item.grade.toString()}
               onChangeText={setEditedGrade}
               style={{ borderBottomWidth: 1, borderColor: '#ccc', width: 80, textAlign: 'center' }}
             />
@@ -87,6 +99,9 @@ const GradesScreen = ({ route }) => {
       </View>
     </View>
   );
+};
+
+
 
   const Delete = (id) => {
     setData(prevData => prevData.filter(item => item.id !== id));
@@ -103,6 +118,7 @@ const GradesScreen = ({ route }) => {
         data={data}
         renderItem={renderItem}
         keyExtractor={item => (item.id || 'default_id').toString()}
+        ListEmptyComponent={() => <Text>No data found</Text>}
       />
 
       <Button title="Générer Excel" onPress={() => genExcel(data)} style={styles.button} />

@@ -128,8 +128,11 @@ const CameraScreen = ({ navigation }) => {
         
         
       }}
-    />
-        <Button title="Save" onPress={saveAndSend}  />
+        />
+        <View style={{paddingLeft:20}}>
+          <Button title="Save" onPress={saveAndSend}  />
+        </View>
+        
 
   
 </View>
@@ -173,7 +176,6 @@ const styles = StyleSheet.create({
   },
   bottomSection: {
     flexDirection:'row',
-    backgroundColor: 'red',
     alignItems: 'center',
     justifyContent:'center',
     height: unities.bottomSection,
