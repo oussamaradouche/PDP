@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Pressable, Button } from 'react-native';
 import { ActivityIndicator, List, useTheme } from 'react-native-paper';
 import { Camera, useCameraDevice, useCameraPermission, useCodeScanner } from 'react-native-vision-camera';
 import unities from './unities';
-
+import TextRecognition from 'react-native-text-recognition';
 
 const CameraScreen = ({ navigation }) => {
   const theme = useTheme();
@@ -13,40 +13,79 @@ const CameraScreen = ({ navigation }) => {
   const handlePress = () => setExpanded(!expanded);
   const camera = useRef(null); 
   const [recognizedText, setRecognizedText] = useState('');
+  const [recognizedId, setRecognizedId] = useState('');
   const [photo, setPhoto] = useState(null);
-  const [studentId, setStudentId] = useState('');
-  const [grade, setGrade] = useState('');
+  // const [studentId, setStudentId] = useState('');
+  // const [grade, setGrade] = useState('');
   const [data, setData] = useState([]);
-
+//////////////////////////////////////////////////////////////////
   const codeScanner = useCodeScanner({
   codeTypes: ['qr', 'ean-13','code-128'],
   onCodeScanned: (codes) => {
     //console.log(`Scanned ${codes.length} codes!`);
-    setRecognizedText(codes[0].value)
+    setRecognizedId(codes[0].value)
   }
-})
+  })
+  //////////////////////////////////////////////////////////////////
+  const extractNoteFromText = (text) => {
+  // This regex looks for the string "note:" followed by any number of spaces and then two digits
+  const regex = /Note:\s*(\d{2})/i; 
+  const matches = text.match(regex);
 
-  const onTakePicturePress = async () => {
-    const capturedPhoto = await camera.current.takePhoto();
-    setPhoto(capturedPhoto);
-    console.log('picture taken');
-    //handleOCR();
-    console.log(photo.path);
-    console.log('ocr called');
-    
+  if (matches && matches.length > 1) {
+    // matches[1] contains the first capturing group, which are the digits we're interested in
+    return matches[1];
+  } else {
+    // If no match is found, return a default value or null
+    return null;
+  }
+};
+///////////////////////////////////////////////////////////////////
+ const onTakePicturePress = async () => {
+    if (camera.current) {
+        const options = { quality: 0.5, base64: true };
+        const capturedPhoto = await camera.current.takePhoto(options);
+        setPhoto({ path: capturedPhoto.path }); 
+        console.log('Picture taken at:', capturedPhoto.path);
+    }
   };
+///////////////////////////////////////////////////////////////////
+useEffect(() => {
+    if (photo?.path) {
+        console.log('Photo state updated, calling handleOCR...');
+        handleOCR();
+    }
+}, [photo]);
+///////////////////////////////////////////////////////////////////
+const handleOCR = async () => {
+    if (photo?.path) {
+        try {
+            const result = await TextRecognition.recognize(photo.path);
+            console.log('OCR Result:', result);
 
-  /*const handleOCR = async () => {
-    console.log('in handleOCR');
-    // there will always be an image to extract digits from
-    const imageUri = photo.path;
-    console.log('imageuri:', imageUri);
-    const extractDigits = await Tesseract.recognize(imageUri); 
-    console.log('uri:',photo)
-    setRecognizedText(extractDigits);
-    
-  };*/
+            // Assuming result is an array of recognized strings
+            const recognizedText = result.join(' ');
+            const note = extractNoteFromText(recognizedText);
 
+            if (note !== null) {
+                console.log('Note found:', note);
+                setRecognizedText(`${note}`);
+            } else {
+                console.log('No note found in the recognized text.');
+                setRecognizedText('No note found');
+            }
+        } catch (error) {
+            console.error('OCR Error:', error);
+            setRecognizedText('OCR failed');
+        }
+    } else {
+        console.log('No photo to process for OCR');
+        setRecognizedText('No photo available');
+    }
+};
+
+  
+/////////////////////////////////////////////////
   const Save = () => {
     const newData = {
       id: data.length + 1, 
@@ -56,29 +95,34 @@ const CameraScreen = ({ navigation }) => {
 
     setData(prevData => [...prevData, newData]);
 
-    setRecognizedText('');
+    setRecognizedId('');
 
   };
+
+////////////////////////////////////////////////
   useEffect(() => {
   if (data.length > 0) {
     sendDataToGradesScreen();
   }
-}, [data]);
+  }, [data]);
+  
+///////////////////////////////////////////////////////////
   const sendDataToGradesScreen = () => {
 
     navigation.navigate('Grades', { data: data });
   };
-
+///////////////////////////////////////////////////////////
   const saveAndSend = () => {
     Save();
     sendDataToGradesScreen();
   }
-
+///////////////////////////////////////////////////////
   useEffect(() => {
     if (!hasPermission) {
       requestPermission();
     }
   }, [hasPermission]);
+  /////////////////////////////////////////////////////
   if (!hasPermission) {
     return <ActivityIndicator />;
   }
@@ -90,8 +134,8 @@ const CameraScreen = ({ navigation }) => {
     <View style={styles.container}>
       <View style={styles.topSection}>
         <View style={styles.infoBox}>
-          <Text style={styles.infoText}>Numéro :{recognizedText}</Text>
-          <Text style={styles.infoText}>Note :</Text>
+          <Text style={styles.infoText}>Numéro :{recognizedId}</Text>
+          <Text style={styles.infoText}>Note :{recognizedText}</Text>
         </View>
         <List.Section>
           <List.Accordion
