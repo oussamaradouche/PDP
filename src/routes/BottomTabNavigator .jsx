@@ -11,42 +11,41 @@ const CameraName = "Camera";
 const GradesName = "Grades";
 
 const BottomTabNavigator = ({ theme }) => {
-  return (
-    <Tab.Navigator
-      initialRouteName={CameraName}
-      screenOptions={({ route }) => ({
-        headerShown:false,
-        tabBarIcon: ({ focused, color, size }) => {
-          let iconName;
-          let rn = route.name;
+	return (
+		<Tab.Navigator
+			initialRouteName={CameraName}
+			screenOptions={({ route }) => ({
+				tabBarActiveTintColor: theme.colors.primary,
+				tabBarInactiveTintColor: theme.colors.grayColor,
+				tabBarLabelStyle: { paddingBottom: 10, fontSize: 10 },
+				tabBarStyle: {
+					display: 'flex',
+					backgroundColor: theme.colors.secondary,
+				},
+				headerShown: false,
+				tabBarIcon: ({ focused, color, size }) => {
+					let iconName;
+					let rn = route.name;
 
-          if (rn === CameraName) {
-            iconName = focused ? 'camera' : 'camera';
-          } else if (rn === GradesName) {
-            iconName = focused ? 'document' : 'document';
-          }
-          return <Ionicons name={iconName} size={size} color={color} />;
-        },
-      })}
-      tabBarOptions={{
-        activeTintColor: theme.colors.primary, 
-        inactiveTintColor: theme.colors.grayColor,
-        labelStyle: { paddingBottom: 10, fontSize: 10 },
-        style: {
-          display: 'flex',
-          backgroundColor: theme.colors.secondary, 
-        },
-      }}>
+					if (rn === CameraName) {
+						iconName = focused ? 'camera' : 'camera';
+					} else if (rn === GradesName) {
+						iconName = focused ? 'document' : 'document';
+					}
+					return <Ionicons name={iconName} size={size} color={color} />;
+				},
+			})}
+		>
 
-      <Tab.Screen name={CameraName}>
-        {props => <CameraScreen {...props}/>}
-      </Tab.Screen>
-      <Tab.Screen name={GradesName}>
-      {props => <GradesScreen {...props}  />}
-      </Tab.Screen>
+			<Tab.Screen name={CameraName}>
+				{props => <CameraScreen {...props} />}
+			</Tab.Screen>
+			<Tab.Screen name={GradesName}>
+				{props => <GradesScreen {...props} />}
+			</Tab.Screen>
 
-    </Tab.Navigator>
-  );
+		</Tab.Navigator>
+	);
 };
 
 export default BottomTabNavigator;
