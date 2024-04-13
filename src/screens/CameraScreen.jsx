@@ -4,18 +4,8 @@ import { ActivityIndicator, List, useTheme } from 'react-native-paper';
 import { Camera, useCameraDevice, useCameraFormat, useCameraPermission, useCodeScanner } from 'react-native-vision-camera';
 import unities from './unities';
 import TextRecognition from 'react-native-text-recognition';
-import { useEventListener } from 'react-native-tesseract-ocr';
-
-
-import TesseractOcr, { LANG_FRENCH, LANG_ENGLISH, LEVEL_WORD, LEVEL_LINE } from 'react-native-tesseract-ocr';
-
-const tessOptions = {};
 
 const CameraScreen = ({ navigation }) => {
-	const [progress, setProgress] = useState(0);
-	useEventListener('onProgressChange', (p) => {
-		console.log("ocr progress: ", p.percent / 100);
-	});
 	const theme = useTheme();
 	const { hasPermission, requestPermission } = useCameraPermission();
 	const device = useCameraDevice('back');
@@ -67,7 +57,7 @@ const CameraScreen = ({ navigation }) => {
 	useEffect(() => {
 		if (photo?.path) {
 			console.log('Photo state updated, calling handleOCR...');
-			handleOCRTesseract();
+			handleOCR();
 		}
 	}, [photo]);
 	///////////////////////////////////////////////////////////////////
@@ -97,35 +87,6 @@ const CameraScreen = ({ navigation }) => {
 			setRecognizedText('No photo available');
 		}
 	};
-
-	const handleOCRTesseract = async () => {
-		if (photo?.path) {
-			try {
-				console.log('Calling Tesseract OCR on photo:', photo.path);
-				const result = await TesseractOcr.recognize(photo.path, LANG_ENGLISH, tessOptions);
-				console.log('OCR Result:', result);
-
-				// Assuming result is an array of recognized strings
-				const note = extractNoteFromText(recognizedText);
-
-				if (note !== null) {
-					console.log('Note found:', note);
-					setRecognizedText(`${note}`);
-				} else {
-					console.log('No note found in the recognized text.');
-					setRecognizedText('No note found');
-				}
-			} catch (error) {
-				console.error('OCR Error:', error);
-				setRecognizedText('OCR failed');
-			}
-		} else {
-			console.log('No photo to process for OCR');
-			setRecognizedText('No photo available');
-		}
-	};
-
-
 
 	/////////////////////////////////////////////////
 	const Save = () => {
