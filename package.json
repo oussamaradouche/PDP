@@ -4,8 +4,7 @@
 	"scripts": {
 		"start": "expo start --dev-client",
 		"android": "expo run:android",
-		"ios": "expo run:ios",
-		"web": "expo start --web"
+		"ios": "expo run:ios"
 	},
 	"dependencies": {
 		"@react-navigation/bottom-tabs": "^6.5.12",
@@ -13,6 +12,7 @@
 		"@react-navigation/stack": "^6.3.21",
 		"expo": "~50.0.7",
 		"expo-file-system": "^16.0.8",
+		"expo-image-manipulator": "^11.8.0",
 		"expo-permissions": "^14.4.0",
 		"expo-sharing": "^11.10.0",
 		"expo-status-bar": "~1.11.1",
@@ -30,9 +30,7 @@
 		"react-native-text-recognition": "^1.1.0",
 		"react-native-vector-icons": "^10.0.3",
 		"react-native-vision-camera": "^3.9.0",
-		"react-native-worklets-core": "^0.4.0",
-		"tesseract.js": "^5.0.5",
-		"xlsx": "^0.18.5"
+		"react-native-worklets-core": "^0.4.0"
 	},
 	"devDependencies": {
 		"@babel/core": "^7.20.0",

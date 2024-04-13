@@ -33,9 +33,6 @@
 				"android.permission.RECORD_AUDIO"
 			]
 		},
-		"web": {
-			"favicon": "./assets/favicon.png"
-		},
 		"plugins": [
 			[
 				"react-native-vision-camera",
@@ -46,6 +43,11 @@
 					"enableCodeScanner": true
 				}
 			]
-		]
+		],
+		"extra": {
+			"eas": {
+				"projectId": "14f0dbcd-890b-4b0a-836c-5ca57a8d242a"
+			}
+		}
 	}
 }

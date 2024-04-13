@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Button, View, Text, TextInput, TouchableOpacity, FlatList } from 'react-native';
-import { StatusBar } from 'expo-status-bar';
-import * as XLSX from 'xlsx';
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -16,21 +14,6 @@ const GradesScreen = ({ route }) => {
 	}, [initialData]);
 
 	const [data, setData] = useState(initialData);
-
-	const genExcel = (data) => {
-		let workbook = XLSX.utils.book_new();
-		let worksheet = XLSX.utils.json_to_sheet(data);
-
-		XLSX.utils.book_append_sheet(workbook, worksheet, "Feuille de notes", true);
-		const base64 = XLSX.write(workbook, { type: "base64" });
-		const filename = FileSystem.documentDirectory + "Notes.xlsx";
-
-		FileSystem.writeAsStringAsync(filename, base64, {
-			encoding: FileSystem.EncodingType.Base64,
-		}).then(() => {
-			Sharing.shareAsync(filename);
-		});
-	};
 
 	const genCsv = (data) => {
 		let csv = "Nom,Note\n";
