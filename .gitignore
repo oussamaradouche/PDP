@@ -77,5 +77,4 @@ yarn-error.*
 
 android/
 ios/
-package-lock.json
 build/
