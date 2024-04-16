@@ -92,7 +92,6 @@ android {
         versionName "1.0.0"
 
         buildConfigField("boolean", "REACT_NATIVE_UNSTABLE_USE_RUNTIME_SCHEDULER_ALWAYS", (findProperty("reactNative.unstable_useRuntimeSchedulerAlways") ?: true).toString())
-            
     }
     signingConfigs {
         debug {
@@ -145,11 +144,11 @@ android {
 dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
-
+    implementation 'com.google.mlkit:text-recognition:16.0.0'
     def isGifEnabled = (findProperty('expo.gif.enabled') ?: "") == "true";
     def isWebpEnabled = (findProperty('expo.webp.enabled') ?: "") == "true";
     def isWebpAnimatedEnabled = (findProperty('expo.webp.animated') ?: "") == "true";
-    implementation 'com.google.mlkit:text-recognition:16.0.0'
+
     if (isGifEnabled) {
         // For animated gif support
         implementation("com.facebook.fresco:animated-gif:${reactAndroidLibs.versions.fresco.get()}")

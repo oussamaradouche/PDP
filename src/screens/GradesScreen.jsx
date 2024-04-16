@@ -5,18 +5,31 @@ import * as XLSX from 'xlsx';
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { storage } from '../components/utils'
 
-const GradesScreen = ({ route }) => {
-  const initialData = route?.params?.data ; 
-  console.log("Initial Data:", initialData);
+
+ 
+const GradesScreen = ({ route,navigation  }) => {
+  console.log("routee", route);
+  const navigationData = route.params?.initialData;
+  const [data, setData] = useState(JSON.parse(storage.getString('data'))); 
+
+useEffect(() => {
+  // This effect listens for navigation param changes and reloads data accordingly
+
+    console.log("Reloading data due to navigation param...");
+    
+  
+}, [route.name]); 
   
 useEffect(() => {
-  console.log("Initial Data:", initialData);
-  setData(initialData);
-}, [initialData]);
-
-  const [data, setData] = useState(initialData); 
-
+  console.log("storage: ", storage.getString('data'));
+  setData(JSON.parse(storage.getString('data')));
+}, []);
+useEffect(() => {
+  setData(JSON.parse(storage.getString('data')));
+}, [storage]);
+  
   const genExcel = (data) => {
     let workbook = XLSX.utils.book_new();
     let worksheet = XLSX.utils.json_to_sheet(data);
@@ -32,17 +45,26 @@ useEffect(() => {
     });
   };
 
+
   const [editedStudentId, setEditedStudentId] = useState('');
   const [editedGrade, setEditedGrade] = useState('');
   const [selectedId, setSelectedId] = useState(null);
 
   const Edit = (id, student_id, grade) => {
+    
     setEditedStudentId(student_id.toString());
     setEditedGrade(grade.toString());
     setSelectedId(id);
   };
 
   const Save = () => {
+    let updatedItem = { id: selectedId, student_id:editedStudentId,grade:editedGrade}
+    const parsedData = storage.getString('data') ? JSON.parse(storage.getString('data')) : [];
+    const index = parsedData.findIndex((item) => item.id === selectedId);
+    if (index !== -1) {
+      parsedData[index] = updatedItem;
+      storage.set('data', JSON.stringify(parsedData));
+    }
     setData(prevData => {
       return prevData.map(item => {
         if (item.id === selectedId) {
@@ -104,6 +126,12 @@ useEffect(() => {
 
 
   const Delete = (id) => {
+    const parsedData = storage.getString('data') ? JSON.parse(storage.getString('data')) : [];
+    const index = parsedData.findIndex((item) => item.id === id);
+    if (index !== -1) {
+      parsedData.splice(index, 1);
+      storage.set('data', JSON.stringify(parsedData));
+}
     setData(prevData => prevData.filter(item => item.id !== id));
   };
 
@@ -115,13 +143,13 @@ useEffect(() => {
       </View>
 
       <FlatList
-        data={data}
+        data={JSON.parse(storage.getString('data'))}
         renderItem={renderItem}
         keyExtractor={item => (item.id || 'default_id').toString()}
         ListEmptyComponent={() => <Text>No data found</Text>}
       />
 
-      <Button title="Générer Excel" onPress={() => genExcel(data)} style={styles.button} />
+      <Button title="Générer Excel" onPress={() => genExcel(JSON.parse(storage.getString('data')))} style={styles.button} />
     </View>
   );
 }

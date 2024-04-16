@@ -4,8 +4,8 @@ import { ActivityIndicator, List, useTheme } from 'react-native-paper';
 import { Camera, useCameraDevice, useCameraPermission, useCodeScanner } from 'react-native-vision-camera';
 import unities from './unities';
 import TextRecognition from 'react-native-text-recognition';
-
-const CameraScreen = ({ navigation }) => {
+import  {storage} from '../components/utils'
+const CameraScreen = ({ route, navigation }) => {
   const theme = useTheme();
   const { hasPermission, requestPermission } = useCameraPermission();
   const device = useCameraDevice('back');
@@ -18,6 +18,17 @@ const CameraScreen = ({ navigation }) => {
   // const [studentId, setStudentId] = useState('');
   // const [grade, setGrade] = useState('');
   const [data, setData] = useState([]);
+  ////////////////////////////////////////////////////////
+  
+  // useEffect(() => {
+  //   const receivedData = route.params?.data;
+    
+  //   if (route?.params?.data) {
+  //     console.log("Initial Data:", receivedData);
+  //     setData(receivedData);
+  //   }
+  // }, [route.params?.data]);
+
 //////////////////////////////////////////////////////////////////
   const codeScanner = useCodeScanner({
   codeTypes: ['qr', 'ean-13','code-128'],
@@ -29,7 +40,7 @@ const CameraScreen = ({ navigation }) => {
   //////////////////////////////////////////////////////////////////
   const extractNoteFromText = (text) => {
   // This regex looks for the string "note:" followed by any number of spaces and then two digits
-  const regex = /Note:\s*(\d{2})/i; 
+   const regex = /Note:\s*(\d{1,2}(,\d{1,2})?)/i;
   const matches = text.match(regex);
 
   if (matches && matches.length > 1) {
@@ -84,38 +95,55 @@ const handleOCR = async () => {
     }
 };
 
-  
+ 
 /////////////////////////////////////////////////
-  const Save = () => {
+  const Save = async () => {
     const newData = {
-      id: data.length + 1, 
-      student_id: recognizedText,
-      grade: 15
+      id: Math.random().toString(),
+      student_id: recognizedId,
+      grade: recognizedText
     };
+    if (recognizedText !== 'No note found') {
+      let parsedData = storage.getString('data') ? JSON.parse(storage.getString('data')) : [];
+    
+    parsedData.push(newData);
 
-    setData(prevData => [...prevData, newData]);
-
+    // Assuming storage.set is async or returns a Promise
+    await storage.set('data', JSON.stringify(parsedData)); // Make sure this operation is awaited
+  
+    // Reset local state after saving
     setRecognizedId('');
+    setRecognizedText('');
 
-  };
+    // Navigate and ensure GradesScreen reloads data
+    navigation.navigate('Grades', { 
+      initialData: JSON.stringify(parsedData),
+      reloadData: true // This is a hypothetical prop to signal data reload
+    });
+    console.log('parsedDat',parsedData)
+    }
+    
+    
+};
+
 
 ////////////////////////////////////////////////
-  useEffect(() => {
-  if (data.length > 0) {
-    sendDataToGradesScreen();
-  }
-  }, [data]);
+  // useEffect(() => {
+  // if (data.length > 0) {
+  //   sendDataToGradesScreen();
+  // }
+  // }, [data]);
   
 ///////////////////////////////////////////////////////////
-  const sendDataToGradesScreen = () => {
+  // const sendDataToGradesScreen = () => {
 
-    navigation.navigate('Grades', { data: data });
-  };
+  //   navigation.navigate('Grades', { data: data });
+  // };
 ///////////////////////////////////////////////////////////
-  const saveAndSend = () => {
-    Save();
-    sendDataToGradesScreen();
-  }
+  // const saveAndSend = () => {
+    
+  //   sendDataToGradesScreen();
+  // }
 ///////////////////////////////////////////////////////
   useEffect(() => {
     if (!hasPermission) {
@@ -174,7 +202,7 @@ const handleOCR = async () => {
       }}
         />
         <View style={{paddingLeft:20}}>
-          <Button title="Save" onPress={saveAndSend}  />
+          <Button title="Save" onPress={Save}  />
         </View>
         
 
