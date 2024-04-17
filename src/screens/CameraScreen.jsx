@@ -166,19 +166,7 @@ const CameraScreen = ({ route, navigation }) => {
 					<Text style={styles.infoText}>Numéro :{recognizedId}</Text>
 					<Text style={styles.infoText}>Note :{recognizedText}</Text>
 				</View>
-				<List.Section>
-					<List.Accordion
-						style={{ backgroundColor: "white", borderColor: theme.colors.primary, borderWidth: 1, width: 100, height: 60 }}
-						rippleColor={theme.colors.primary}
-						left={props => <List.Icon {...props} icon="camera" />}
-						expanded={expanded}
-						onPress={handlePress}>
-						<List.Item
-							style={{ backgroundColor: "white" }}
-							left={() => <List.Icon icon="video" />}
-						/>
-					</List.Accordion>
-				</List.Section>
+				
 			</View>
 			<Camera
 				ref={camera}
