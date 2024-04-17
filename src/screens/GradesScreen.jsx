@@ -143,7 +143,7 @@ const GradesScreen = ({ route, navigation }) => {
 				ListEmptyComponent={() => <Text>No data found</Text>}
 			/>
 
-			<Button title="Générer Excel" onPress={() => genCsv(JSON.parse(storage.getString('data')))} style={styles.button} />
+			<Button title="Générer Csv" onPress={() => genCsv(JSON.parse(storage.getString('data')))} style={styles.button} />
 		</View>
 	);
 }
