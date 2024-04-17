@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Pressable, Button } from 'react-native';
 import { ActivityIndicator, List, useTheme } from 'react-native-paper';
 import { Camera, useCameraDevice, useCameraFormat, useCameraPermission, useCodeScanner } from 'react-native-vision-camera';
 import unities from './unities';
-import TextRecognition from 'react-native-text-recognition';
+import TextRecognition from '@thoguet/react-native-text-recognition';
 
 const CameraScreen = ({ navigation }) => {
 	const theme = useTheme();
