@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, StyleSheet, Pressable, Button } from 'react-native';
-import { ActivityIndicator, List, useTheme } from 'react-native-paper';
+import { View, Text, StyleSheet, Pressable, TouchableOpacity } from 'react-native';
+import { ActivityIndicator, Icon, useTheme } from 'react-native-paper';
 import { Camera, useCameraDevice, useCameraPermission, useCodeScanner } from 'react-native-vision-camera';
 import unities from './unities';
 import TextRecognition from '@thoguet/react-native-text-recognition';
@@ -177,26 +177,19 @@ const CameraScreen = ({ route, navigation }) => {
 				codeScanner={codeScanner}
 			/>
 			<View style={styles.bottomSection}>
-
-				<Pressable
-					onPress={onTakePicturePress}
-					style={{
-						backgroundColor: 'white',
-						width: 65,
-						height: 65,
-						borderRadius: 75,
-						borderWidth: 2,
-
-
-					}}
-				/>
-				<View style={{ paddingLeft: 20 }}>
-					<Button title="Save" onPress={Save} />
-				</View>
-
-
-
-			</View>
+  <View style={{flex: 1}}></View> 
+  <Pressable
+    onPress={onTakePicturePress}
+    style={styles.captureButton}>
+   
+  </Pressable>
+  <View style={{flex: 1}}></View> 
+  <TouchableOpacity onPress={Save} style={styles.saveButton}>
+    <Icon name="save" size={20} color="#FFF" />
+    <Text style={{color: '#FFF', marginLeft: 8}}>Save</Text>
+  </TouchableOpacity>
+  <View style={{flex: 0.1}}></View> 
+  </View>
 
 		</View>
 	);
@@ -236,12 +229,35 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 	},
 	bottomSection: {
-		flexDirection: 'row',
-		alignItems: 'center',
-		justifyContent: 'center',
-		height: unities.bottomSection,
-		paddingBottom: 50
-	},
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'space-around',
+  height: unities.bottomSection,
+  paddingBottom: 50,
+  position: 'relative',
+},
+
+captureButton: {
+  backgroundColor: 'white',
+  width: 65,
+  height: 65,
+  borderRadius: 75,
+  borderWidth: 2,
+  position: 'absolute', 
+  left: '50%',
+  top: '50%', 
+  transform: [{ translateX: -32.5 }, { translateY: -32.5 }], 
+},
+saveButton: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  backgroundColor: '#48BAB8', 
+  paddingHorizontal: 20,
+  paddingVertical: 10,
+  borderRadius: 20,
+  marginLeft:-500
+  
+},
 
 
 });
