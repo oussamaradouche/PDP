@@ -19,16 +19,8 @@ const CameraScreen = ({ route, navigation }) => {
 	// const [studentId, setStudentId] = useState('');
 	// const [grade, setGrade] = useState('');
 	const [data, setData] = useState([]);
-	////////////////////////////////////////////////////////
 
-	// useEffect(() => {
-	//   const receivedData = route.params?.data;
-
-	//   if (route?.params?.data) {
-	//     console.log("Initial Data:", receivedData);
-	//     setData(receivedData);
-	//   }
-	// }, [route.params?.data]);
+	
 
 	//////////////////////////////////////////////////////////////////
 	const codeScanner = useCodeScanner({
@@ -128,23 +120,6 @@ const CameraScreen = ({ route, navigation }) => {
 	};
 
 
-	////////////////////////////////////////////////
-	// useEffect(() => {
-	// if (data.length > 0) {
-	//   sendDataToGradesScreen();
-	// }
-	// }, [data]);
-
-	///////////////////////////////////////////////////////////
-	// const sendDataToGradesScreen = () => {
-
-	//   navigation.navigate('Grades', { data: data });
-	// };
-	///////////////////////////////////////////////////////////
-	// const saveAndSend = () => {
-
-	//   sendDataToGradesScreen();
-	// }
 	///////////////////////////////////////////////////////
 	useEffect(() => {
 		if (!hasPermission) {
